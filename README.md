@@ -45,15 +45,17 @@
       .card h2 { margin: 0; font-size: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
       .card-content { margin-top: 12px; }
       .card.collapsed .card-content { display: none; }
-      .card-toggle { font-size: 12px; padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--text); cursor: pointer; }
+      .card-toggle { font-size: 12px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 10px; background: #fff; color: var(--text); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
       .card-toggle:hover { background: #f0f4f8; }
+      .card-toggle .chevron { display: inline-block; transition: transform 200ms ease; }
+      .card.collapsed .card-toggle .chevron { transform: rotate(180deg); }
       .hint { color: var(--muted); font-size: 13px; }
 
-      .item { display: grid; grid-template-columns: auto 1fr minmax(120px, 160px) 100px; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--border); }
+      .item { display: grid; grid-template-columns: auto 1fr minmax(120px, 160px) fit-content(8ch); gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--border); }
       .item:last-child { border-bottom: 0; }
       .price { color: var(--muted); justify-self: end; }
-      .qty { width: 100px; }
-      .qty input { width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; }
+      .qty { width: auto; }
+      .qty input { width: 6ch; min-width: 5ch; max-width: 8ch; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; text-align: center; }
       .price-edit {
         width: 120px;
         padding: 8px 10px;
@@ -85,7 +87,11 @@
         }
         .price { justify-self: start; }
         .price-edit { width: 100%; }
-        .qty { width: 100%; }
+        .qty { width: auto; justify-self: start; }
+        .qty input { width: 8ch; }
+        .summary { position: static; top: auto; }
+        .actions { flex-direction: column; }
+        button { min-height: 44px; padding: 12px 16px; }
       }
 
       .summary {
@@ -109,6 +115,9 @@
         border-radius: 10px;
         background: #fff;
         cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
       }
       button.primary { background: var(--primary); color: white; border-color: var(--primary); }
       button.secondary { background: #fff; color: var(--text); }
@@ -136,6 +145,20 @@
         .recibo { display: block; }
         body { background: #fff; }
       }
+
+      /* Reordenar a segunda grade no mobile para mostrar Resumo primeiro */
+      @media (max-width: 640px) {
+        .grid-secondary {
+          grid-template-columns: 1fr;
+          grid-template-areas:
+            "resumo"
+            "dados"
+            "obs";
+        }
+        .grid-secondary > .summary { grid-area: resumo; }
+        .grid-secondary > section.card:nth-child(1) { grid-area: dados; }
+        .grid-secondary > section.card:nth-child(2) { grid-area: obs; }
+      }
     </style>
   </head>
   <body>
@@ -148,7 +171,7 @@
       <div class="grid">
         <!-- Coluna esquerda: seleção -->
         <section class="card" aria-labelledby="consultas-title">
-          <h2 id="consultas-title">Consultas <button class="card-toggle" aria-expanded="true" aria-controls="consultas-content">Recolher</button></h2>
+          <h2 id="consultas-title">Consultas <button class="card-toggle" aria-expanded="true" aria-controls="consultas-content"><span class="chevron" aria-hidden="true">▾</span><span class="label">Recolher</span></button></h2>
           <div id="consultas-content" class="card-content">
           <p class="hint">Escolha o tipo de consulta.</p>
 
@@ -176,7 +199,7 @@
         </section>
 
         <section class="card" aria-labelledby="exames-title">
-          <h2 id="exames-title">Exames <button class="card-toggle" aria-expanded="true" aria-controls="exames-content">Recolher</button></h2>
+          <h2 id="exames-title">Exames <button class="card-toggle" aria-expanded="true" aria-controls="exames-content"><span class="chevron" aria-hidden="true">▾</span><span class="label">Recolher</span></button></h2>
           <div id="exames-content" class="card-content">
           <p class="hint">Marque os exames realizados e ajuste o valor e a quantidade quando necessário.</p>
 
@@ -211,7 +234,7 @@
         </section>
 
         <section class="card" aria-labelledby="vacinas-title">
-          <h2 id="vacinas-title">Vacinas <button class="card-toggle" aria-expanded="true" aria-controls="vacinas-content">Recolher</button></h2>
+          <h2 id="vacinas-title">Vacinas <button class="card-toggle" aria-expanded="true" aria-controls="vacinas-content"><span class="chevron" aria-hidden="true">▾</span><span class="label">Recolher</span></button></h2>
           <div id="vacinas-content" class="card-content">
           <p class="hint">Marque as vacinas realizadas e ajuste o valor e a quantidade quando necessário.</p>
 
@@ -274,7 +297,7 @@
         </section>
 
         <section class="card" aria-labelledby="testes-title">
-          <h2 id="testes-title">Testes rápidos <button class="card-toggle" aria-expanded="true" aria-controls="testes-content">Recolher</button></h2>
+          <h2 id="testes-title">Testes rápidos <button class="card-toggle" aria-expanded="true" aria-controls="testes-content"><span class="chevron" aria-hidden="true">▾</span><span class="label">Recolher</span></button></h2>
           <div id="testes-content" class="card-content">
           <p class="hint">Marque os testes rápidos realizados e ajuste o valor e a quantidade quando necessário.</p>
 
@@ -316,7 +339,7 @@
         </section>
 
         <section class="card" aria-labelledby="aplicacoes-title">
-          <h2 id="aplicacoes-title">Aplicações e medicações <button class="card-toggle" aria-expanded="true" aria-controls="aplicacoes-content">Recolher</button></h2>
+          <h2 id="aplicacoes-title">Aplicações e medicações <button class="card-toggle" aria-expanded="true" aria-controls="aplicacoes-content"><span class="chevron" aria-hidden="true">▾</span><span class="label">Recolher</span></button></h2>
           <div id="aplicacoes-content" class="card-content">
           <p class="hint">Marque as aplicações realizadas e ajuste o valor e a quantidade quando necessário..</p>
 
@@ -330,9 +353,9 @@
         </section>
       </div>
 
-      <div class="grid" style="margin-top: 16px;">
+      <div class="grid grid-secondary" style="margin-top: 16px;">
         <section class="card" aria-labelledby="dados-title">
-          <h2 id="dados-title">Dados do recibo <button class="card-toggle" aria-expanded="true" aria-controls="dados-content">Recolher</button></h2>
+          <h2 id="dados-title">Dados do recibo <button class="card-toggle" aria-expanded="true" aria-controls="dados-content"><span class="chevron" aria-hidden="true">▾</span><span class="label">Recolher</span></button></h2>
           <div id="dados-content" class="card-content">
             <div class="form-row">
               <label for="cliente-nome">Responsável</label>
@@ -361,7 +384,7 @@
           </div>
         </section>
         <section class="card" aria-labelledby="obs-title">
-          <h2 id="obs-title">Observações <button class="card-toggle" aria-expanded="true" aria-controls="obs-content">Recolher</button></h2>
+          <h2 id="obs-title">Observações <button class="card-toggle" aria-expanded="true" aria-controls="obs-content"><span class="chevron" aria-hidden="true">▾</span><span class="label">Recolher</span></button></h2>
           <div id="obs-content" class="card-content">
           <div class="note">
             <textarea id="observacoes" placeholder="Inclua observações relevantes sobre o atendimento..."></textarea>
@@ -378,8 +401,8 @@
             <div id="total" class="total-amount">R$ 0,00</div>
           </div>
           <div class="actions">
-            <button class="primary" id="btn-imprimir">Imprimir recibo</button>
-            <button class="secondary" id="btn-reset">Limpar seleção</button>
+            <button class="primary" id="btn-imprimir"><span class="btn-icon" aria-hidden="true">🖨️</span><span>Imprimir recibo</span></button>
+            <button class="secondary" id="btn-reset"><span class="btn-icon" aria-hidden="true">🧹</span><span>Limpar seleção</span></button>
           </div>
         </aside>
       </div>
@@ -469,6 +492,15 @@
         }
       }
 
+      function autosizeQtyInputs() {
+        document.querySelectorAll('.qty input[type="number"]').forEach(inp => {
+          const val = (inp.value || '').trim();
+          const len = Math.max(1, val.length);
+          const ch = Math.min(8, Math.max(5, len + 2));
+          inp.style.width = `${ch}ch`;
+        });
+      }
+
       function updateTotal() {
         const items = [];
         const consulta = getSelectedConsulta();
@@ -530,10 +562,11 @@
           const contentId = toggle?.getAttribute('aria-controls');
           const content = contentId ? document.getElementById(contentId) : card.querySelector('.card-content');
           if (!toggle || !content) return;
+          const labelSpan = toggle.querySelector('.label');
           toggle.addEventListener('click', () => {
             const collapsed = card.classList.toggle('collapsed');
             toggle.setAttribute('aria-expanded', (!collapsed).toString());
-            toggle.textContent = collapsed ? 'Expandir' : 'Recolher';
+            if (labelSpan) labelSpan.textContent = collapsed ? 'Expandir' : 'Recolher';
           });
         });
       }
@@ -548,7 +581,7 @@
           cb.addEventListener('change', () => { updateQtyState(); updateTotal(); });
           const item = cb.closest('.item');
           const qtyInput = item.querySelector('.qty input');
-          if (qtyInput) qtyInput.addEventListener('input', updateTotal);
+          if (qtyInput) qtyInput.addEventListener('input', () => { autosizeQtyInputs(); updateTotal(); });
           const priceEdit = item.querySelector('.price-edit');
           if (priceEdit) priceEdit.addEventListener('input', updateTotal);
         });
@@ -567,6 +600,7 @@
       initCardToggles();
       updateQtyState();
       updateTotal();
+      autosizeQtyInputs();
 
       // PWA: registra service worker
       if ('serviceWorker' in navigator) {
