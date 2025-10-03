@@ -49,10 +49,10 @@
       .card-toggle:hover { background: #f0f4f8; }
       .hint { color: var(--muted); font-size: 13px; }
 
-      .item { display: grid; grid-template-columns: auto 1fr auto 90px; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--border); }
+      .item { display: grid; grid-template-columns: auto 1fr minmax(120px, 160px) 100px; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--border); }
       .item:last-child { border-bottom: 0; }
-      .price { color: var(--muted); }
-      .qty { width: 80px; }
+      .price { color: var(--muted); justify-self: end; }
+      .qty { width: 100px; }
       .qty input { width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; }
       .price-edit {
         width: 120px;
@@ -66,6 +66,26 @@
         outline: none;
         border-color: var(--accent);
         box-shadow: 0 0 0 3px rgba(38, 178, 172, 0.25);
+      }
+
+      /* Distribuição semântica por áreas */
+      .item > input[type="checkbox"], .item > input[type="radio"] { grid-area: check; }
+      .item > label { grid-area: label; }
+      .item > .price { grid-area: price; }
+      .item > .qty { grid-area: qty; }
+      .item { grid-template-areas: "check label price qty"; }
+
+      /* Mobile: empilha preço e quantidade abaixo do rótulo */
+      @media (max-width: 640px) {
+        .container { padding: 0 12px; }
+        .item { grid-template-columns: auto 1fr; grid-template-areas:
+          "check label"
+          ". price"
+          ". qty";
+        }
+        .price { justify-self: start; }
+        .price-edit { width: 100%; }
+        .qty { width: 100%; }
       }
 
       .summary {
